@@ -16,10 +16,10 @@ try {
 } catch (error) {
 
 }
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true,
-}
+// const corsOptions = {
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+// }
 
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
