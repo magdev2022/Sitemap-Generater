@@ -1,8 +1,10 @@
-const csv = require('csv-parser')
-const fs = require('fs')
+const SiteMap = require('./../model/Sitemap')
+
 module.exports = (router) => {
     router.route('/send_sitemap')
         .get((req, res, next) => {
-            res.json({ "url": "ok" })
+            SiteMap.find((err, result) => {
+                res.json({ "result": result })
+            })
         })
 }

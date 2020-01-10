@@ -5,8 +5,8 @@ function App() {
   return (
     <div>
       <div className="header">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <h1>Sitemap</h1>
+        <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#221223", color: "white", marginBottom: 20 }}>
+          <h1>Sitemap Generater</h1>
         </nav>
       </div>
       <div className="container">
@@ -14,7 +14,7 @@ function App() {
           <Route exact path="/" component={Home} />
         </Switch>
       </div>
-    </div>
+    </div >
   );
 }
 export default App;

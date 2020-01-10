@@ -16,43 +16,63 @@ export default class Home extends Component {
             result_show: false,
             loading_status: false,
             result: [],
-            csv_status: false
+            csv_status: false,
+            download: false
         }
     }
+
+    //Get url change
     handleChange = e => {
         this.setState({ site_url: e.target.value })
     }
+
+    //Get Sitemap Array hashtag
     handleSubmit = e => {
         e.preventDefault();
+        this.setState({ download: false })
         this.setState({ loading_status: true })
         const site_url = { site_url: this.state.site_url }
+        if (site_url.site_url.includes("http")) {
+            this.state.interval = setInterval(() =>
+                axioApi.get("send_sitemap")
+                    .then((res) => {
+                        const hashtags = []
+                        for (let index = 0; index < res.data.result.length; index++) {
+                            if (!hashtags.includes(res.data.result[index].hashtag)) {
+                                hashtags.push(res.data.result[index].hashtag)
+                            }
+                        }
+                        this.setState({ result_show: true, result: hashtags })
+                    }), 2000);
+        }
         axioApi.post("get_sitemap", site_url).then((res) => {
             if (res.data.err) {
                 alert(res.data.err)
                 this.setState({ loading_status: false })
             } else if (res.data.url) {
-                console.log(res.data)
                 this.setState({ loading_status: false })
                 var result = res.data.url.split('\n')
-                console.log(result)
                 this.setState({ result_show: true, result: result })
             }
         })
     }
+
+    //Get Sitemap whole data
     handleSubmitDownload = async (e) => {
         e.preventDefault();
+        this.setState({ download: true })
         const site_url = { site_url: this.state.site_url }
         if (site_url.site_url.includes("http")) {
             this.state.interval = setInterval(() =>
                 axioApi.get("send_sitemap")
-                    .then((res) => this.setState({ result_show: true, result: [res.data.url] })), 2000);
+                    .then((res) => this.setState({ result_show: true, result: res.data.result })), 2000);
         }
+        // this.setState({ result_show: true, result: [res.data.url] }))
         if (this.state.csv_status === false) {
             this.setState({ csv_status: true })
             axioApi.post("download_sitemap", site_url).then((res) => {
                 if (res.data.err) {
                     alert(res.data.err)
-                    console.log(res.data.err)
                     this.setState({ loading_status: false, csv_status: false })
                 } else if (res.data.result) {
                     this.setState({ loading_status: false })
@@ -64,10 +84,10 @@ export default class Home extends Component {
         return (
             <div>
                 <div class="row">
-                    <div class="col-2">
-                        <h4>Sitemap URL:</h4>
+                    <div class="col-2" style={{ textAlign: "end", padding: 5 }}>
+                        <h4><b>Sitemap URL:</b></h4>
                     </div>
-                    <div class="col-5">
+                    <div class="col-6">
                         <input type="text" className="form-control" placeholder="https://..." onChange={this.handleChange} />
                     </div>
                     <div class="col-3">
@@ -76,24 +96,43 @@ export default class Home extends Component {
                     </div>
                 </div>
                 <br />
-                {this.state.loading_status && <img src={loading} style={{ width: 500, height: 400 }} alt="loading..." />}
+                {this.state.loading_status && <img src={loading} style={{ width: 200, height: 100 }} alt="loading..." />}
                 <div className="container">
-                    {this.state.result_show && <TableContainer component={Paper}>
-                        <Table aria-label="simple table">
-                            <TableHead>
+                    {this.state.result_show && <TableContainer component={Paper} style={{ maxHeight: 500, overflowY: "visible" }}>
+
+                        <Table aria-label="simple table" >
+                            {this.state.download ? <TableHead>
                                 <TableRow>
-                                    <TableCell><b>Result of Sitemap</b></TableCell>
+                                    <TableCell><b>URL</b></TableCell>
+                                    <TableCell><b>Depth</b></TableCell>
+                                    <TableCell><b>Request Time</b></TableCell>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {this.state.result.map(row => (
-                                    <TableRow key={row}>
-                                        <TableCell component="th" scope="row">
-                                            {row}
-                                        </TableCell>
+                            </TableHead> :
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><b>End Points Array</b></TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
+                                </TableHead>
+                            }
+                            {this.state.download ? this.state.result.map(row =>
+                                <TableBody>
+                                    <TableCell component="th" scope="row">
+                                        {row.url}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {row.depth}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {row.requestTime}
+                                    </TableCell>
+                                </TableBody>
+                            ) : this.state.result.map(row =>
+                                <TableBody>
+                                    <TableCell component="th" scope="row">
+                                        {row}
+                                    </TableCell>
+                                </TableBody>
+                            )}
                         </Table>
                     </TableContainer>}
                 </div>

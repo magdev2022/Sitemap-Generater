@@ -1,6 +1,5 @@
 import axios from 'axios'
-
 const axioApi = axios.create({
-    baseURL: 'https://sitemap-hero.herokuapp.com/api'
+    baseURL: 'http://localhost:5000/api'
 });
 export default axioApi
