@@ -91,8 +91,8 @@ export default class Home extends Component {
                         <input type="text" className="form-control" placeholder="https://..." onChange={this.handleChange} />
                     </div>
                     <div class="col-3">
-                        <button type="submit" class="btn btn-primary" id="get_sitemap_btn" onClick={this.handleSubmit}>Get ArrayMap</button>
-                        <button type="submit" class="btn btn-primary" style={{ marginLeft: 10 }} onClick={this.handleSubmitDownload}>Get Sitemap</button>
+                        <button type="submit" class="btn btn-success" id="get_sitemap_btn" onClick={this.handleSubmit}>Get ArrayMap</button>
+                        <button type="submit" class="btn btn-success" style={{ marginLeft: 10 }} onClick={this.handleSubmitDownload}>Get Sitemap</button>
                     </div>
                 </div>
                 <br />
