@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const routes = require('./routes')
 const app = express();
+const path = require('path')
 const url = process.env.MONGODB_URI || "mongodb+srv://kgh919:1991919@cluster0-81vhb.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
 try {
     mongoose.connect(url, {
@@ -27,6 +28,12 @@ app.use(bodyParser.json())
 routes(router)
 app.use('/api', router)
 
+if (process.env.NODE_ENV == "production") {
+    app.use(express.static('client/build'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+    })
+}
 let port = process.env.PORT || 5000
 // app.set('port', (process.env.PORT || 5000));
 app.listen(port, () => {
