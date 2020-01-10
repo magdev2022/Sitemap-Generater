@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
 const router = express.Router()
-const routes = require('./routes')
+const routes = require('./server/routes')
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 const app = express();
@@ -29,14 +29,16 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(bodyParser.json())
 app.use('/api', router)
-// Serve static assets if in production
-// app.use(express.static('client/build'));
-// app.get('*', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-// });
 
-let port = process.env.PORT || 5000
+// Set static folder
+app.use(express.static('client/build'));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+});
+
 app.set('port', (process.env.PORT || 5000));
 app.listen(app.get('port'), () => {
     console.log('Server Start')
 })
+

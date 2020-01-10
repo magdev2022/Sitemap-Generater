@@ -7,7 +7,7 @@ module.exports = (router) => {
                 const url = req.body.site_url
                 if (url.includes("http://") | url.includes("https://")) {
                     // create generator
-                    SiteMap.remove().exec()
+                    SiteMap.deleteMany({}).exec();
                     const generator = SitemapGenerator(url, {
                         stripQuerystring: false,
                         ignoreHreflang: true
