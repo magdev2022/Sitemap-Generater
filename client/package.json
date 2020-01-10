@@ -41,6 +41,5 @@
   "engines": {
     "node": "13.5.0",
     "npm": "6.13.4"
-  },
-  "proxy": "https://mysitemap.herokuapp.com/"
+  }
 }
